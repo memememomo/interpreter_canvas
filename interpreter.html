@@ -1,0 +1,98 @@
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<script type="text/javascript" src="interpreter.js"></script>
+<script type="text/javascript" src="car.js"></script>
+<script type="text/javascript">
+window.onload = function() {  
+    var elm = document.getElementById('execute');
+    elm.addEventListener('click', function() {
+       var code = document.getElementById('code').value;
+       var node = new ProgramNode();
+       var rslt = node.parse(new Context(code));
+       if (rslt == false) return;
+
+       var command_list = node.execute();
+
+       var canvas = document.getElementById('canvas');
+       var cc = canvas.getContext('2d');
+
+       cc.clearRect(0, 0, canvas.width, canvas.height);
+
+       var start_x = canvas.width / 2;
+       var start_y = canvas.height / 2;
+       
+       var car = new Car(start_x, start_y, 'UP');
+  
+       drawPoint(cc, car.x, car.y);
+
+       for (var i = 0; i < command_list.length; i++) {
+          var c = command_list[i];
+       //   alert(c);
+          if (c == 'right' || c == 'left') {
+             car.rotate(c);
+          } else if (c == 'go') {
+             moveCar(cc,car);
+          }
+       }
+    });
+    document.getElementById('code').value = "program repeat 5 go right end end";
+
+    document.getElementById('example1').addEventListener('click', function() {
+       document.getElementById('code').value = "program repeat 5 go right end end";
+    });
+
+    document.getElementById('example2').addEventListener('click', function() {
+       document.getElementById('code').value = "program repeat 4 repeat 3 go right go left end right end end";
+    });
+   
+};
+
+var drawPoint = function(cc, x, y) {
+   cc.save();
+   cc.beginPath();
+   cc.strokeStyle = '#00F';
+   cc.fillStyle = '#00F';
+   cc.arc(x, y, 2, 0, Math.PI * 2, false);
+   cc.fill();
+   cc.stroke();
+   cc.restore();
+}
+
+var drawLine = function(cc, x1, y1, x2, y2) {
+   cc.save();
+   cc.beginPath();
+   cc.lineWidth = 2;
+   cc.lineTo(x1, y1);
+   cc.lineTo(x2, y2);
+   cc.stroke();
+   cc.restore();
+}
+
+var moveCar = function(cc, car) {
+   var prev_x = car.x;
+   var prev_y = car.y;
+
+   car.move();
+
+   var new_x = car.x;
+   var new_y = car.y;
+   drawPoint(cc, new_x, new_y);
+   drawLine(cc, prev_x, prev_y, new_x, new_y);
+};
+</script>
+<style type="text/css">
+canvas {
+    border: solid 3px #000;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas" width="400" height="400"></canvas><br>
+<textarea id="code" size="100" cols="50" rows="10"></textarea><br>
+<input type="button" id="execute" value="実行"><br>
+<input type="button" id="example1" value="例1">&nbsp;
+<input type="button" id="example2" value="例2">
+</body>
+</html>
