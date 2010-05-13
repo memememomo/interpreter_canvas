@@ -1,3 +1,4 @@
+// <program> ::= program <command list>
 var ProgramNode = function(context) {};
 ProgramNode.prototype = {
     parse: function(context) {
@@ -13,7 +14,7 @@ ProgramNode.prototype = {
     }
 };
 
-
+// <command list> ::= <command>* end
 var CommandListNode = function() { this.list = new Array(); };
 CommandListNode.prototype = {
     parse: function(context) {
@@ -51,7 +52,7 @@ CommandListNode.prototype = {
 };
 
 
-
+// <command> ::= <repeat command> | <primitive command>
 var CommandNode = function(){};
 CommandNode.prototype = {
     parse: function(context) {
@@ -71,7 +72,7 @@ CommandNode.prototype = {
     }
 };
 
-
+// <repeat command> ::= repeat <number> <command list>
 var RepeatCommandNode = function(){};
 RepeatCommandNode.prototype = {
     parse: function(context) {
@@ -94,7 +95,7 @@ RepeatCommandNode.prototype = {
     }
 };
 
-
+// <primitive command> ::= go | right | left
 var PrimitiveCommandNode = function(){};
 PrimitiveCommandNode.prototype = {
     parse: function(context) {

@@ -7,14 +7,20 @@
 <script type="text/javascript">
 window.onload = function() {  
     var elm = document.getElementById('execute');
+
+    // 実行ボタンをクリック
     elm.addEventListener('click', function() {
+
+       // 入力されたコードをパース
        var code = document.getElementById('code').value;
        var node = new ProgramNode();
        var rslt = node.parse(new Context(code));
        if (rslt == false) return;
 
+       // パースされたコマンドを取得
        var command_list = node.execute();
 
+       // キャンバスの準備
        var canvas = document.getElementById('canvas');
        var cc = canvas.getContext('2d');
 
@@ -27,9 +33,9 @@ window.onload = function() {
   
        drawPoint(cc, car.x, car.y);
 
+       // コマンドリストを基に描画
        for (var i = 0; i < command_list.length; i++) {
           var c = command_list[i];
-       //   alert(c);
           if (c == 'right' || c == 'left') {
              car.rotate(c);
           } else if (c == 'go') {
@@ -37,12 +43,14 @@ window.onload = function() {
           }
        }
     });
+
+    // 初期コード
     document.getElementById('code').value = "program repeat 5 go right end end";
 
+    // コード例
     document.getElementById('example1').addEventListener('click', function() {
        document.getElementById('code').value = "program repeat 5 go right end end";
     });
-
     document.getElementById('example2').addEventListener('click', function() {
        document.getElementById('code').value = "program repeat 4 repeat 3 go right go left end right end end";
     });
